@@ -18,7 +18,6 @@ namespace TheNemesisTest.Runtime.UI {
                 yield return null;
             }
             TNTLobby.Instance.OnAllPlayersJoined += ToggleTeamChoosingPanel;
-            Debug.Log("Subscribed to lobby");
             ToggleMainMenuPanel();
         }
         #endregion

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
+using TheNemesisTest.Runtime.UI;
 using UnityEngine;
 
 namespace TheNemesisTest.Runtime.NetworkSystems {
@@ -13,7 +14,6 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
 
         #region Public Fields
         public System.Action OnAllPlayersJoined;
-        public System.Action OnRoomJoined;
         #endregion
 
         #region Properties
@@ -36,6 +36,9 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 Debug.Log("Connecting to master client...");
                 yield return null;
             }
+            if(PhotonNetwork.IsMasterClient) {
+                Debug.LogError("I AM MASTER CLIENT");
+            }
         }
         #endregion
 
@@ -49,24 +52,39 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
 
         //Triggered automatically whenever a user enters a Lobby in the Master Server
         public override void OnJoinedLobby () {
-            Debug.Log("Connected to Lobby");
         }
 
         //Triggered on a room's creation or joining event
         public override void OnJoinedRoom () {
-            OnRoomJoined?.Invoke();
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 2) {
+                Debug.Log("GAME STARTING!");
+                OnAllPlayersJoined?.Invoke();
+                if(PhotonNetwork.IsMasterClient)
+                    TeamChoosingManager.Instance.Setup();
+                else {
+                    Debug.LogError("CALLING SWAP");
+                    TeamChoosingManager.Instance.SwapTexts();
+                }
+            }
         }
 
         public override void OnJoinRoomFailed (short returnCode, string message) {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Main Menu");
         }
 
         //Triggered automatically whenever a user enters a specific room in the Lobby
         public override void OnPlayerEnteredRoom (Photon.Realtime.Player newPlayer) {
             Debug.Log($"Player {newPlayer.NickName} entered the room");
-            if(PhotonNetwork.CurrentRoom.PlayerCount == 2 && PhotonNetwork.IsMasterClient) {
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 2) {
                 Debug.Log("GAME STARTING!");
                 OnAllPlayersJoined?.Invoke();
+                if(PhotonNetwork.IsMasterClient)
+                    TeamChoosingManager.Instance.Setup();
+                else {
+                    Debug.LogError("CALLING SWAP");
+                    TeamChoosingManager.Instance.SwapTexts();
+
+                }
             }
         }
 

@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88d0a0e82ae9a6d43b92d021d321f38f, type: 3}
-  m_Name: New Team Database
+  m_Script: {fileID: 11500000, guid: 2b2d8c171c2ed654396f6c43229c797c, type: 3}
+  m_Name: Bayern Punchen
   m_EditorClassIdentifier: 
-  teams:
-  - {fileID: 11400000, guid: 483e6a82efd004c4689442a95eb75479, type: 2}
+  teamID: 0
+  teamName: Bayern Punchen
+  inGameSkin: {fileID: 0}
+  goalSkin: {fileID: 0}
