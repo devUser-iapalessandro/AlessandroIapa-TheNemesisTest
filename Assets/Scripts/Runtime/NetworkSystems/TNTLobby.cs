@@ -12,7 +12,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         #endregion
 
         #region Public Fields
-        public System.Action<List<RoomInfo>> OnRoomsListChanged;
+        public System.Action OnAllPlayersJoined;
         public System.Action OnRoomJoined;
         #endregion
 
@@ -28,6 +28,14 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             Instance = this;
 
             _photonView = GetComponent<PhotonView>();
+        }
+
+        IEnumerator Start () {
+            Connect();
+            while(!PhotonNetwork.IsConnected) {
+                Debug.Log("Connecting to master client...");
+                yield return null;
+            }
         }
         #endregion
 
@@ -56,15 +64,14 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         //Triggered automatically whenever a user enters a specific room in the Lobby
         public override void OnPlayerEnteredRoom (Photon.Realtime.Player newPlayer) {
             Debug.Log($"Player {newPlayer.NickName} entered the room");
-            if(PhotonNetwork.CurrentRoom.PlayerCount == 2)
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 2 && PhotonNetwork.IsMasterClient) {
                 Debug.Log("GAME STARTING!");
-
-            //PhotonNetwork.LoadLevel(1);
+                OnAllPlayersJoined?.Invoke();
+            }
         }
 
         //Triggered by Photon Network
         public override void OnRoomListUpdate (List<RoomInfo> roomList) {
-            OnRoomsListChanged?.Invoke(roomList);
         }
 
         public override void OnCreatedRoom () {
@@ -88,8 +95,17 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         }
 
         public void JoinRandomRoom () {
-            PhotonNetwork.JoinRandomRoom();
+            if(!PhotonNetwork.JoinRandomRoom()) {
+                Debug.Log("Establishing connection, wait...");
+                return;
+            }
+
             Debug.Log("Looking for a random room");
+        }
+
+        public void StopLookingForRoom () {
+            PhotonNetwork.LeaveRoom();
+            Debug.Log("Stop looking for a room");
         }
 
         public void CreateRoom () {
