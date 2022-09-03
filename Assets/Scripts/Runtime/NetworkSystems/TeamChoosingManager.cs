@@ -16,6 +16,8 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         private static TeamChoosingManager instance;
         private int playerOneIndex;
         private int playerTwoIndex;
+        private bool playerOneReady;
+        private bool playerTwoReady;
         #endregion
 
         #region Properties
@@ -40,8 +42,8 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 playerOneIndex = 1;
                 playerTwoIndex = 0;
             }
-            _pv.RPC("SetTeam", RpcTarget.All, 1, playerOneIndex);
-            _pv.RPC("SetTeam", RpcTarget.All, 2, playerTwoIndex);
+            _pv.RPC(nameof(SetTeam), RpcTarget.All, 1, playerOneIndex);
+            _pv.RPC(nameof(SetTeam), RpcTarget.All, 2, playerTwoIndex);
         }
 
         public void SwapTexts() => TeamChoosingUI.Instance.SwapTexts();
@@ -65,7 +67,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 else {
                     playerOneIndex--;
                 }
-                _pv.RPC("SetTeam", RpcTarget.All, 1, playerOneIndex);
+                _pv.RPC(nameof(SetTeam), RpcTarget.All, 1, playerOneIndex);
             }
             else {
                 if(playerTwoIndex == 0) {
@@ -74,7 +76,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 else {
                     playerTwoIndex--;
                 }
-                _pv.RPC("SetTeam", RpcTarget.All, 2, playerTwoIndex);
+                _pv.RPC(nameof(SetTeam), RpcTarget.All, 2, playerTwoIndex);
             }
         }
 
@@ -86,7 +88,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 else {
                     playerOneIndex++;
                 }
-                _pv.RPC("SetTeam", RpcTarget.All, 1, playerOneIndex);
+                _pv.RPC(nameof(SetTeam), RpcTarget.All, 1, playerOneIndex);
             }
             else {
                 if(playerTwoIndex == teamsDatabase.teams.Count - 1) {
@@ -95,8 +97,46 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 else {
                     playerTwoIndex++;
                 }
-                _pv.RPC("SetTeam", RpcTarget.All, 2, playerTwoIndex);
+                _pv.RPC(nameof(SetTeam), RpcTarget.All, 2, playerTwoIndex);
             }
+        }
+
+        [PunRPC]
+        private void SetPlayerReady(int caller) {
+            if(caller == 1) {
+                playerOneReady = true;
+                if(!PhotonNetwork.IsMasterClient)
+                    TeamChoosingUI.Instance.SetOpponentReadyness();
+            }
+            else {
+                playerTwoReady = true;
+                if(PhotonNetwork.IsMasterClient)
+                    TeamChoosingUI.Instance.SetOpponentReadyness();
+            }
+        }
+
+        public void SetReady () {
+            if(playerOneIndex == playerTwoIndex) {
+                Debug.LogError("Cannot play with the same team");
+                return;
+            }
+
+            if(PhotonNetwork.IsMasterClient) {
+                if(playerOneReady)
+                    return;
+                else {
+                    _pv.RPC(nameof(SetPlayerReady), RpcTarget.All,1);
+                }
+            }
+            else {
+                if(playerTwoReady)
+                    return;
+                else {
+                    _pv.RPC(nameof(SetPlayerReady), RpcTarget.All, 2);
+                }
+            }
+
+            TeamChoosingUI.Instance.SetupPersonalReadyness();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace TheNemesisTest.Runtime.UI {
         #region Public Variables
         [SerializeField] private GameObject mainMenuPanel;
         [SerializeField] private GameObject teamChoosingPanel;
-        [SerializeField] private GameObject loadingPanel;
+        [SerializeField] private GameObject searchingPanel;
         #endregion
 
         #region Behaviour Callbacks
@@ -27,21 +27,21 @@ namespace TheNemesisTest.Runtime.UI {
         public void ToggleMainMenuPanel () {
             mainMenuPanel.SetActive(true);
             teamChoosingPanel.SetActive(false);
-            loadingPanel.SetActive(false);
+            searchingPanel.SetActive(false);
         }
 
         //TODO automate
         public void ToggleTeamChoosingPanel () {
             mainMenuPanel.SetActive(false);
             teamChoosingPanel.SetActive(true);
-            loadingPanel.SetActive(false);
+            searchingPanel.SetActive(false);
         }
 
         //TODO automate
         public void ToggleLoadingPanel () {
             mainMenuPanel.SetActive(false);
             teamChoosingPanel.SetActive(false);
-            loadingPanel.SetActive(true);
+            searchingPanel.SetActive(true);
         }
         #endregion
     }
