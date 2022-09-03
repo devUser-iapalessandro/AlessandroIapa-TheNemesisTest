@@ -59,7 +59,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             if(PhotonNetwork.CurrentRoom.PlayerCount == 2)
                 Debug.Log("GAME STARTING!");
 
-            PhotonNetwork.LoadLevel(1);
+            //PhotonNetwork.LoadLevel(1);
         }
 
         //Triggered by Photon Network
@@ -74,27 +74,46 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         public override void OnCreateRoomFailed (short returnCode, string message) {
 
         }
+
+        public override void OnJoinRandomFailed (short returnCode, string message) {
+            Debug.LogError("Could not find any match, creating a new room");
+            CreateRoom();
+        }
         #endregion
 
         #region Public Methods
         public void Connect () {
             PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.NickName = "Guest" + "_" + Random.Range(0, 100) + (char)Random.Range(65, 91);
+            PhotonNetwork.NickName = "TNT_Guest" + "_" + Random.Range(0, 100) + (char)Random.Range(65, 91);
+        }
+
+        public void JoinRandomRoom () {
+            PhotonNetwork.JoinRandomRoom();
+            Debug.Log("Looking for a random room");
         }
 
         public void CreateRoom () {
-            string roomName = "Room" + Random.Range(1, 100);
-            RoomOptions options = new RoomOptions();
-            options.MaxPlayers = 2;
+            string roomName = "TNT_Room_" + Random.Range(1, 100);
+
+            RoomOptions options = new RoomOptions() {
+                IsVisible = true,
+                IsOpen = true,
+                MaxPlayers = 2
+            };
 
             PhotonNetwork.CreateRoom(roomName, options);
-            Debug.LogFormat("Room with name {0} created", roomName);
-            OnRoomJoined?.Invoke();
+            Debug.LogFormat("Room with name {0} created. Waiting for someone to join...", roomName);
         }
 
-        public void JoinRoom(RoomInfo infos) {
+        public void JoinRoom (RoomInfo infos) {
             PhotonNetwork.JoinRoom(infos.Name);
             Debug.Log("Room Joined");
+        }
+
+        public void ExitGame () {
+            if(PhotonNetwork.IsConnected)
+                PhotonNetwork.Disconnect();
+            Application.Quit();
         }
         #endregion
 
