@@ -11,7 +11,18 @@ namespace TheNemesisTest.Runtime.UI {
         [SerializeField] private GameObject searchingPanel;
         #endregion
 
+        #region Properties
+        private static TNTLobbyUI instance;
+        public static TNTLobbyUI Instance => instance;
+        #endregion
+
         #region Behaviour Callbacks
+        private void Awake () {
+            if(instance == null) {
+                instance = this;
+            }
+        }
+
         IEnumerator Start () {
             while(TNTLobby.Instance == null) {
                 Debug.Log("Waiting for lobby to be concrete");
@@ -38,7 +49,7 @@ namespace TheNemesisTest.Runtime.UI {
         }
 
         //TODO automate
-        public void ToggleLoadingPanel () {
+        public void ToggleSearchingPanel () {
             mainMenuPanel.SetActive(false);
             teamChoosingPanel.SetActive(false);
             searchingPanel.SetActive(true);

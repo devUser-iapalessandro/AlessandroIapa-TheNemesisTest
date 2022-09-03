@@ -16,8 +16,8 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         private static TeamChoosingManager instance;
         private int playerOneIndex;
         private int playerTwoIndex;
-        private bool playerOneReady;
-        private bool playerTwoReady;
+        private bool isPlayerOneReady;
+        private bool isPlayerTwoReady;
         #endregion
 
         #region Properties
@@ -59,6 +59,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             TeamChoosingUI.Instance.SetTeamNameTexts(teamsDatabase.teams[playerOneIndex], teamsDatabase.teams[playerTwoIndex]);
         }
 
+        //Called by switch on UI
         public void GoLeft () {
             if(PhotonNetwork.IsMasterClient) {
                 if(playerOneIndex == 0) {
@@ -80,6 +81,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             }
         }
 
+        //Called by switch on UI
         public void GoRight () {
             if(PhotonNetwork.IsMasterClient) {
                 if(playerOneIndex == teamsDatabase.teams.Count - 1) {
@@ -104,17 +106,21 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         [PunRPC]
         private void SetPlayerReady(int caller) {
             if(caller == 1) {
-                playerOneReady = true;
+                isPlayerOneReady = true;
                 if(!PhotonNetwork.IsMasterClient)
                     TeamChoosingUI.Instance.SetOpponentReadyness();
             }
             else {
-                playerTwoReady = true;
+                isPlayerTwoReady = true;
                 if(PhotonNetwork.IsMasterClient)
                     TeamChoosingUI.Instance.SetOpponentReadyness();
             }
+
+            if(isPlayerOneReady && isPlayerTwoReady)
+                PhotonNetwork.LoadLevel(1);
         }
 
+        //Called by button on UI
         public void SetReady () {
             if(playerOneIndex == playerTwoIndex) {
                 Debug.LogError("Cannot play with the same team");
@@ -122,14 +128,14 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             }
 
             if(PhotonNetwork.IsMasterClient) {
-                if(playerOneReady)
+                if(isPlayerOneReady)
                     return;
                 else {
                     _pv.RPC(nameof(SetPlayerReady), RpcTarget.All,1);
                 }
             }
             else {
-                if(playerTwoReady)
+                if(isPlayerTwoReady)
                     return;
                 else {
                     _pv.RPC(nameof(SetPlayerReady), RpcTarget.All, 2);

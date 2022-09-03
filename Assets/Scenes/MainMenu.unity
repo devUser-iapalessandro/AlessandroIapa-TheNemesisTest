@@ -4778,7 +4778,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 434560480}
         m_TargetAssemblyTypeName: TheNemesisTest.Runtime.UI.TNTLobbyUI, Assembly-CSharp
-        m_MethodName: ToggleLoadingPanel
+        m_MethodName: ToggleSearchingPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

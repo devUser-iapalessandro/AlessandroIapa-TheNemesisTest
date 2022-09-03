@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace TheNemesisTest.Runtime.UI {
-
     public class TeamChoosingUI : MonoBehaviour {
         #region Public Variables
         [SerializeField] private TextMeshProUGUI homeTeamName;
@@ -33,11 +32,7 @@ namespace TheNemesisTest.Runtime.UI {
         }
 
         void Start () {
-            personalReadyButtonText.color = Color.white;
-            opponentReadyText.color = Color.white;
-            leftSwitch.interactable = true;
-            rightSwitch.interactable = true;
-            readyColor = Color.green;
+            ResetTabs();
         }
         #endregion
 
@@ -48,7 +43,6 @@ namespace TheNemesisTest.Runtime.UI {
         }
 
         public void SwapTexts () {
-            Debug.LogError("SWAP");
             var temp = homeTeamName;
             homeTeamName = oppositeTeamName;
             oppositeTeamName = temp;
@@ -62,6 +56,14 @@ namespace TheNemesisTest.Runtime.UI {
 
         public void SetOpponentReadyness () {
             opponentReadyText.color = readyColor;
+        }
+
+        public void ResetTabs () {
+            personalReadyButtonText.color = Color.white;
+            opponentReadyText.color = Color.white;
+            leftSwitch.interactable = true;
+            rightSwitch.interactable = true;
+            readyColor = Color.green;
         }
         #endregion
 

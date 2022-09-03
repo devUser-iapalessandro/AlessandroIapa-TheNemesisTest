@@ -37,7 +37,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 yield return null;
             }
             if(PhotonNetwork.IsMasterClient) {
-                Debug.LogError("I AM MASTER CLIENT");
+                Debug.Log("I AM MASTER CLIENT");
             }
         }
         #endregion
@@ -48,10 +48,6 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             PhotonNetwork.AutomaticallySyncScene = true;
             Debug.Log("Connected to master");
 
-        }
-
-        //Triggered automatically whenever a user enters a Lobby in the Master Server
-        public override void OnJoinedLobby () {
         }
 
         //Triggered on a room's creation or joining event
@@ -88,21 +84,17 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             }
         }
 
-        //Triggered by Photon Network
-        public override void OnRoomListUpdate (List<RoomInfo> roomList) {
-        }
-
-        public override void OnCreatedRoom () {
-
-        }
-
-        public override void OnCreateRoomFailed (short returnCode, string message) {
-
-        }
-
         public override void OnJoinRandomFailed (short returnCode, string message) {
             Debug.LogError("Could not find any match, creating a new room");
             CreateRoom();
+        }
+
+        public override void OnDisconnected (DisconnectCause cause) {
+            Debug.LogErrorFormat("Disconnected with disconnetion cause: {0}", cause);
+            PhotonNetwork.LeaveRoom();
+            TeamChoosingUI.Instance.ResetTabs();
+            JoinRandomRoom();
+            TNTLobbyUI.Instance.ToggleSearchingPanel();
         }
         #endregion
 
@@ -139,15 +131,17 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             Debug.LogFormat("Room with name {0} created. Waiting for someone to join...", roomName);
         }
 
-        public void JoinRoom (RoomInfo infos) {
-            PhotonNetwork.JoinRoom(infos.Name);
-            Debug.Log("Room Joined");
+        public void ExitGame () {
+            if(PhotonNetwork.IsConnected) {
+                PhotonNetwork.LeaveRoom();
+                PhotonNetwork.SendAllOutgoingCommands();
+                PhotonNetwork.Disconnect();
+            }
+            Application.Quit();
         }
 
-        public void ExitGame () {
-            if(PhotonNetwork.IsConnected)
-                PhotonNetwork.Disconnect();
-            Application.Quit();
+        private void OnApplicationQuit () {
+            PhotonNetwork.Disconnect();
         }
         #endregion
 
