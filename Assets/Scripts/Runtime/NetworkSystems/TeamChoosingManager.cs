@@ -116,8 +116,9 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                     TeamChoosingUI.Instance.SetOpponentReadyness();
             }
 
-            if(isPlayerOneReady && isPlayerTwoReady)
+            if(isPlayerOneReady && isPlayerTwoReady) {
                 PhotonNetwork.LoadLevel(1);
+            }
         }
 
         //Called by button on UI

@@ -9,6 +9,7 @@ namespace TheNemesisTest.Runtime.UI {
         [SerializeField] private GameObject mainMenuPanel;
         [SerializeField] private GameObject teamChoosingPanel;
         [SerializeField] private GameObject searchingPanel;
+        [SerializeField] private GameObject loadingPanel;
         #endregion
 
         #region Properties

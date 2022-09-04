@@ -58,7 +58,6 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 if(PhotonNetwork.IsMasterClient)
                     TeamChoosingManager.Instance.Setup();
                 else {
-                    Debug.LogError("CALLING SWAP");
                     TeamChoosingManager.Instance.SwapTexts();
                 }
             }
@@ -77,9 +76,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 if(PhotonNetwork.IsMasterClient)
                     TeamChoosingManager.Instance.Setup();
                 else {
-                    Debug.LogError("CALLING SWAP");
                     TeamChoosingManager.Instance.SwapTexts();
-
                 }
             }
         }
@@ -91,10 +88,6 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
 
         public override void OnDisconnected (DisconnectCause cause) {
             Debug.LogErrorFormat("Disconnected with disconnetion cause: {0}", cause);
-            PhotonNetwork.LeaveRoom();
-            TeamChoosingUI.Instance.ResetTabs();
-            JoinRandomRoom();
-            TNTLobbyUI.Instance.ToggleSearchingPanel();
         }
         #endregion
 
@@ -105,9 +98,13 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         }
 
         public void JoinRandomRoom () {
-            if(!PhotonNetwork.JoinRandomRoom()) {
+            StartCoroutine(nameof(JoinRandomRoomCO));
+        }
+
+        private IEnumerator JoinRandomRoomCO () {
+            while(!PhotonNetwork.JoinRandomRoom()) {
                 Debug.Log("Establishing connection, wait...");
-                return;
+                yield return null;
             }
 
             Debug.Log("Looking for a random room");
@@ -140,8 +137,16 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             Application.Quit();
         }
 
+        public override void OnPlayerLeftRoom (Photon.Realtime.Player otherPlayer) {
+            Debug.LogErrorFormat("Player {0} left the game, going back to main menu", otherPlayer.NickName);
+            StopLookingForRoom();
+            TNTLobbyUI.Instance.ToggleMainMenuPanel();
+        }
+
         private void OnApplicationQuit () {
-            PhotonNetwork.Disconnect();
+            if(PhotonNetwork.IsConnected) {
+                PhotonNetwork.Disconnect();
+            }
         }
         #endregion
 
