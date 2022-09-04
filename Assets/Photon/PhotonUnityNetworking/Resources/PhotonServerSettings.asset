@@ -42,6 +42,8 @@ MonoBehaviour:
   - SetTeam
   - SetPlayerReady
   - SetupPlayers
+  - SendCurrentPoints
+  - SetWinner
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

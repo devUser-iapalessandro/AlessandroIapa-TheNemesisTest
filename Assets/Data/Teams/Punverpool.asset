@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamID: 0
   teamName: Punverpool
-  inGameSkin: {fileID: 0}
-  goalSkin: {fileID: 0}
+  inGameSkin: {fileID: 2100000, guid: fc6c607932ebf59438b38c4e28bb2c4d, type: 2}
+  goalSkin: {fileID: 2100000, guid: fc6c607932ebf59438b38c4e28bb2c4d, type: 2}

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamID: 0
   teamName: Punchester City
-  inGameSkin: {fileID: 0}
-  goalSkin: {fileID: 0}
+  inGameSkin: {fileID: 2100000, guid: 99104e3a2da97af47ad3fcfcf87418b1, type: 2}
+  goalSkin: {fileID: 2100000, guid: 99104e3a2da97af47ad3fcfcf87418b1, type: 2}

@@ -117,6 +117,8 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             }
 
             if(isPlayerOneReady && isPlayerTwoReady) {
+                GameManager.Instance.PlayerOneTeamIndex = playerOneIndex;
+                GameManager.Instance.PlayerTwoTeamIndex = playerTwoIndex;
                 PhotonNetwork.LoadLevel(1);
             }
         }

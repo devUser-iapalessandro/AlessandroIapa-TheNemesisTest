@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1717162553664550247}
   - component: {fileID: 1717162553664550244}
   - component: {fileID: 1717162553664550245}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 1717162554576180573}
   - component: {fileID: 1717162554576180572}
   - component: {fileID: 1717162554576180575}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TNTPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -282,3 +282,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94c31a6044d48d40aa5044b15759f93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerRenderer: {fileID: 1717162553664550244}
+  _controller: {fileID: 1717162554576180573}

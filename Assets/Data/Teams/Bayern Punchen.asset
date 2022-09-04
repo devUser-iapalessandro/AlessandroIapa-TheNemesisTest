@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamID: 0
   teamName: Bayern Punchen
-  inGameSkin: {fileID: 0}
-  goalSkin: {fileID: 0}
+  inGameSkin: {fileID: 2100000, guid: e3b25751394513a45ad611acf9b55737, type: 2}
+  goalSkin: {fileID: 2100000, guid: e3b25751394513a45ad611acf9b55737, type: 2}

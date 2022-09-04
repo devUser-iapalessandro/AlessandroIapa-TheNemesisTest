@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamID: 0
   teamName: Puncellona
-  inGameSkin: {fileID: 0}
-  goalSkin: {fileID: 0}
+  inGameSkin: {fileID: 2100000, guid: 1c23200624bf1b94aac423d31c6d69d9, type: 2}
+  goalSkin: {fileID: 2100000, guid: 1c23200624bf1b94aac423d31c6d69d9, type: 2}

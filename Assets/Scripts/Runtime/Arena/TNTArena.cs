@@ -6,34 +6,25 @@ using UnityEngine;
 namespace TheNemesisTest.Runtime.Arena {
     public class TNTArena : MonoBehaviour {
         #region Public Variables
-
+        [Header("Spawn Points")]
         [SerializeField] private Transform playerOneSpawnPoint;
         [SerializeField] private Transform playerTwoSpawnPoint;
+        [SerializeField] private Transform ballSpawnPoint;
 
+        [Header("Arena Vertices")]
         [SerializeField] private Transform topLeftEdge;
         [SerializeField] private Transform topRightEdge;
         [SerializeField] private Transform bottomLeftEdge;
         [SerializeField] private Transform bottomRightEdge;
         #endregion
 
-        #region Private Variables
-        private static TNTArena instance;
-        #endregion
-
         #region Properties
-        public static TNTArena Instance => instance;
-
         public Transform PlayerOneSpawnPoint => playerOneSpawnPoint;
         public Transform PlayerTwoSpawnPoint => playerTwoSpawnPoint;
+        public Transform BallSpawnPoint => ballSpawnPoint;
         #endregion
 
         #region Behaviour Callbacks
-        void Awake () {
-            if(instance == null) {
-                instance = this;
-            }
-        }
-
         void OnDrawGizmos () {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(topLeftEdge.position, .5f);

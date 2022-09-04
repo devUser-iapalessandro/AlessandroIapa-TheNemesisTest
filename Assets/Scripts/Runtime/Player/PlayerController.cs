@@ -33,12 +33,6 @@ namespace TheNemesisTest.Runtime.Player {
             _acceleration = _inputDirection * acceleration;
             _rb.AddForce(_acceleration, ForceMode.Acceleration);
         }
-
-
-        private void OnGUI () {
-            GUILayout.Label(string.Format("Input Direction = {0}, Moving Direction = {1}", _inputDirection, _movingDirection));
-            GUILayout.Label(string.Format("Rigidbody Velocity = {0}", _rb.velocity));
-        }
         #endregion
 
         public void OnMove (InputAction.CallbackContext context) {
