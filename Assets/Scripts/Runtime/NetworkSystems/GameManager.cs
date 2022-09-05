@@ -26,8 +26,8 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         private static GameManager instance;
         private PhotonView _pv;
         private TNTArena arena;
-        private static TNTPlayer playerOne;
-        private static TNTPlayer playerTwo;
+        private static TNTPlayer playerOneInstance;
+        private static TNTPlayer playerTwoInstance;
         private static GameObject ballInstance;
         private static GameObject playerOneGoalInstance;
         private static GameObject playerTwoGoalInstance;
@@ -59,29 +59,29 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             playerOnePoints = 0;
             playerTwoPoints = 0;
 
-            SceneManager.sceneLoaded += Restart;
+            SceneManager.sceneLoaded += SetupGame;
         }
 
         private void OnGUI () {
             if(SceneManager.GetActiveScene().buildIndex == 1)
-                if(GUILayout.Button("Spawn Players"))
-                    InstantiatePlayers();
+                GUILayout.Label(string.Format("Player One -> {0} - Player Two -> {1}", playerOneInstance, playerTwoInstance));
         }
         #endregion
 
         #region Public Methods
         public void InstantiatePlayers () {
             if(PhotonNetwork.IsMasterClient) {
-                if(playerOne != null)
+                Debug.Log("INSTA MASTER");
+                if(playerOneInstance != null)
                     return;
                 object[] data = { playerOneTeamIndex };
-                playerOne = PhotonNetwork.Instantiate(playerPrefab.name, arena.PlayerOneSpawnPoint.position, Quaternion.identity, data: data).GetComponent<TNTPlayer>();
+                playerOneInstance = PhotonNetwork.Instantiate(playerPrefab.name, arena.PlayerOneSpawnPoint.position, Quaternion.identity, data: data).GetComponent<TNTPlayer>();
             }
             else {
-                if(playerTwo != null)
+                if(playerTwoInstance != null)
                     return;
                 object[] data = { playerTwoTeamIndex };
-                playerTwo = PhotonNetwork.Instantiate(playerPrefab.name, arena.PlayerTwoSpawnPoint.position, Quaternion.identity, data: data).GetComponent<TNTPlayer>();
+                playerTwoInstance = PhotonNetwork.Instantiate(playerPrefab.name, arena.PlayerTwoSpawnPoint.position, Quaternion.identity, data: data).GetComponent<TNTPlayer>();
             }
             InstantiateGoals();
             InstantiateBall();
@@ -97,14 +97,14 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             if(PhotonNetwork.IsMasterClient) {
                 if(playerOneGoalInstance != null)
                     return;
-                object[] data = { 1 };
+                object[] data = { 2 };
                 playerOneGoalInstance = PhotonNetwork.Instantiate(goalPrefab.name, arena.GetRandomPositionInsideEdges(), Quaternion.identity, data: data);
 
             }
             else {
                 if(playerTwoGoalInstance != null)
                     return;
-                object[] data = { 2 };
+                object[] data = { 1 };
                 playerTwoGoalInstance = PhotonNetwork.Instantiate(goalPrefab.name, arena.GetRandomPositionInsideEdges(), Quaternion.identity, data: data);
 
             }
@@ -120,15 +120,14 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
 
             _pv.RPC(nameof(SendCurrentPoints), RpcTarget.All, playerOnePoints, playerTwoPoints);
 
+            _pv.RPC(nameof(ResetArena), RpcTarget.All);
 
-            if(PhotonNetwork.IsMasterClient)
-                ResetArena();
-
-            CheckWinningCondition();
+            _pv.RPC(nameof(CheckWinningCondition), RpcTarget.All);
         }
         #endregion
 
         #region Private Methods
+        [PunRPC]
 
         private void CheckWinningCondition () {
             if(playerOnePoints == pointsToWin) {
@@ -138,24 +137,35 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 _pv.RPC(nameof(SetWinner), RpcTarget.All, 2);
             }
             else {
-                Restart(SceneManager.GetActiveScene());
+                SetupGame(SceneManager.GetActiveScene());
             }
         }
 
-        private void Restart (Scene scene, LoadSceneMode loadSceneMode = LoadSceneMode.Single) {
+        private void SetupGame (Scene scene, LoadSceneMode loadSceneMode = LoadSceneMode.Single) {
+            Debug.LogError($"Scene Index is {scene.buildIndex}");
             if(scene.buildIndex == 1) {
+                Debug.LogError("SETUP GAME");
                 InstantiatePlayers();
-                InstantiateGoals();
-                InstantiateBall();
             }
         }
 
+        [PunRPC]
         private void ResetArena () {
-            PhotonNetwork.Destroy(playerOne.gameObject);
-            PhotonNetwork.Destroy(playerTwo.gameObject);
-            PhotonNetwork.Destroy(ballInstance);
-            PhotonNetwork.Destroy(playerOneGoalInstance);
-            PhotonNetwork.Destroy(playerTwoGoalInstance);
+
+            if(PhotonNetwork.IsMasterClient) {
+                PhotonNetwork.Destroy(playerOneInstance.gameObject);
+                PhotonNetwork.Destroy(ballInstance);
+                PhotonNetwork.Destroy(playerOneGoalInstance);
+            }
+            else {
+                PhotonNetwork.Destroy(playerTwoInstance.gameObject);
+                PhotonNetwork.Destroy(playerTwoGoalInstance);
+            }
+            playerOneInstance = null;
+            playerTwoInstance = null;
+            playerOneGoalInstance = null;
+            playerTwoGoalInstance = null;
+            ballInstance = null;
         }
         #endregion
 

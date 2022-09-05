@@ -1356,7 +1356,7 @@ MonoBehaviour:
   mainMenuPanel: {fileID: 1912691120}
   teamChoosingPanel: {fileID: 847743334}
   searchingPanel: {fileID: 210712963}
-  loadingPanel: {fileID: 0}
+  loadingPanel: {fileID: 1640009941}
 --- !u!1 &446814964
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,7 +2284,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 59.85
+  m_fontSize: 52.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2419,7 +2419,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45.05
+  m_fontSize: 52.85
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1

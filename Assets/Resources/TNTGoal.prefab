@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7602547462418004088}
   - component: {fileID: 7602547462418004089}
   - component: {fileID: 7602547462418004070}
-  - component: {fileID: 7602547462418004071}
+  - component: {fileID: 8716137359780215760}
   m_Layer: 8
   m_Name: Goal
   m_TagString: Untagged
@@ -84,20 +84,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7602547462418004071
-CapsuleCollider:
+--- !u!54 &8716137359780215760
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7602547462418004068}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.45
-  m_Height: 0.1
-  m_Direction: 1
-  m_Center: {x: 0, y: -3, z: 0}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &7602547463498292150
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,6 +111,8 @@ GameObject:
   - component: {fileID: 7602547463498292105}
   - component: {fileID: 7602547463498292107}
   - component: {fileID: 7602547463498292104}
+  - component: {fileID: 6003021977840419026}
+  - component: {fileID: 5841815840673753082}
   m_Layer: 8
   m_Name: TNTGoal
   m_TagString: Untagged
@@ -167,3 +171,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goalRenderer: {fileID: 7602547462418004070}
+--- !u!136 &6003021977840419026
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7602547463498292150}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1.25
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.25, z: 0}
+--- !u!54 &5841815840673753082
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7602547463498292150}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0

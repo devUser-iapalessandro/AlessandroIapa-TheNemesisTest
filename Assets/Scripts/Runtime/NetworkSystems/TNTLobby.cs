@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using TheNemesisTest.Runtime.UI;
@@ -47,6 +46,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             PhotonNetwork.JoinLobby();
             PhotonNetwork.AutomaticallySyncScene = true;
             Debug.Log("Connected to master");
+            TNTLobbyUI.Instance.ToggleMainMenuPanel();
 
         }
 
@@ -82,7 +82,6 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         }
 
         public override void OnJoinRandomFailed (short returnCode, string message) {
-            Debug.LogError("Could not find any match, creating a new room");
             CreateRoom();
         }
 

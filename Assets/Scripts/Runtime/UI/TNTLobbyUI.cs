@@ -22,6 +22,7 @@ namespace TheNemesisTest.Runtime.UI {
             if(instance == null) {
                 instance = this;
             }
+            ToggleLoadingPanel();
         }
 
         IEnumerator Start () {
@@ -30,7 +31,6 @@ namespace TheNemesisTest.Runtime.UI {
                 yield return null;
             }
             TNTLobby.Instance.OnAllPlayersJoined += ToggleTeamChoosingPanel;
-            ToggleMainMenuPanel();
         }
         #endregion
 
@@ -40,6 +40,7 @@ namespace TheNemesisTest.Runtime.UI {
             mainMenuPanel.SetActive(true);
             teamChoosingPanel.SetActive(false);
             searchingPanel.SetActive(false);
+            loadingPanel.SetActive(false);
         }
 
         //TODO automate
@@ -47,6 +48,7 @@ namespace TheNemesisTest.Runtime.UI {
             mainMenuPanel.SetActive(false);
             teamChoosingPanel.SetActive(true);
             searchingPanel.SetActive(false);
+            loadingPanel.SetActive(false);
         }
 
         //TODO automate
@@ -54,6 +56,15 @@ namespace TheNemesisTest.Runtime.UI {
             mainMenuPanel.SetActive(false);
             teamChoosingPanel.SetActive(false);
             searchingPanel.SetActive(true);
+            loadingPanel.SetActive(false);
+
+        }
+
+        public void ToggleLoadingPanel () {
+            mainMenuPanel.SetActive(false);
+            teamChoosingPanel.SetActive(false);
+            searchingPanel.SetActive(false);
+            loadingPanel.SetActive(true);
         }
         #endregion
     }
