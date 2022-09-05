@@ -6,21 +6,22 @@ namespace TheNemesisTest.Runtime.Arena {
     [RequireComponent(typeof(PhotonView))]
     public class TNTGoal : MonoBehaviour {
         [SerializeField] private MeshRenderer goalRenderer;
-        private int goalIndex;
+        private int goalOwnership;
+        private int goalMaterialIndex;
         private PhotonView _pv;
 
         void Awake () {
             _pv = GetComponent<PhotonView>();
             if(_pv.InstantiationData != null) {
-                goalIndex = (int)_pv.InstantiationData[0];
-                goalRenderer.material = GameManager.Instance.TeamDatabase.teams[goalIndex].goalSkin;
+                goalOwnership = (int)_pv.InstantiationData[0];
+                goalMaterialIndex = (int)_pv.InstantiationData[1];
+                goalRenderer.material = GameManager.Instance.TeamDatabase.teams[goalMaterialIndex].goalSkin;
             }
         }
 
         private void OnTriggerEnter (Collider other) {
             if(other.gameObject.layer == 6) { //ball 
-                Debug.Log("Goal");
-                GameManager.Instance.AddPoint(goalIndex);
+                GameManager.Instance.AddPoint(goalOwnership);
             }
         }
     }

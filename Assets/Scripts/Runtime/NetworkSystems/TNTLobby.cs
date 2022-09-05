@@ -36,6 +36,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 yield return null;
             }
             if(PhotonNetwork.IsMasterClient) {
+                TNTLobbyUI.Instance.ToggleMainMenuPanel();
                 Debug.Log("I AM MASTER CLIENT");
             }
         }
@@ -47,13 +48,11 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             PhotonNetwork.AutomaticallySyncScene = true;
             Debug.Log("Connected to master");
             TNTLobbyUI.Instance.ToggleMainMenuPanel();
-
         }
 
         //Triggered on a room's creation or joining event
         public override void OnJoinedRoom () {
             if(PhotonNetwork.CurrentRoom.PlayerCount == 2) {
-                Debug.Log("GAME STARTING!");
                 OnAllPlayersJoined?.Invoke();
                 if(PhotonNetwork.IsMasterClient)
                     TeamChoosingManager.Instance.Setup();
@@ -69,9 +68,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
 
         //Triggered automatically whenever a user enters a specific room in the Lobby
         public override void OnPlayerEnteredRoom (Photon.Realtime.Player newPlayer) {
-            Debug.Log($"Player {newPlayer.NickName} entered the room");
             if(PhotonNetwork.CurrentRoom.PlayerCount == 2) {
-                Debug.Log("GAME STARTING!");
                 OnAllPlayersJoined?.Invoke();
                 if(PhotonNetwork.IsMasterClient)
                     TeamChoosingManager.Instance.Setup();
@@ -93,20 +90,13 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         #region Public Methods
         public void Connect () {
             PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.NickName = "TNT_Guest" + "_" + Random.Range(0, 100) + (char)Random.Range(65, 91);
+
+            //if(PhotonNetwork.IsConnectedAndReady)
+            //    PhotonNetwork.NickName = "TNT_Guest" + "_" + Random.Range(0, 100) + (char)Random.Range(65, 91);
         }
 
         public void JoinRandomRoom () {
-            StartCoroutine(nameof(JoinRandomRoomCO));
-        }
-
-        private IEnumerator JoinRandomRoomCO () {
-            while(!PhotonNetwork.JoinRandomRoom()) {
-                Debug.Log("Establishing connection, wait...");
-                yield return null;
-            }
-
-            Debug.Log("Looking for a random room");
+            PhotonNetwork.JoinRandomRoom();
         }
 
         public void StopLookingForRoom () {

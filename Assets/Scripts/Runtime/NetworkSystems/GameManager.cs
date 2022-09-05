@@ -1,9 +1,9 @@
+using System.Collections;
 using Photon.Pun;
 using TheNemesisTest.Runtime.Arena;
 using TheNemesisTest.Runtime.Data;
 using TheNemesisTest.Runtime.Player;
 using UnityEngine;
-using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
 namespace TheNemesisTest.Runtime.NetworkSystems {
@@ -18,8 +18,8 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         [SerializeField] private TeamDatabaseSO teamDatabase;
 
         public System.Action<int, int> OnPointsChanged;
-        public System.Action OnWin;
-        public System.Action OnLose;
+        public System.Action<string> OnTeamHasScored;
+        public System.Action<bool> OnGameEnded;
         #endregion
 
         #region Private Variables
@@ -48,10 +48,9 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         #endregion
 
         #region Behaviour Callbacks
-
-
         void Awake () {
             _pv = GetComponent<PhotonView>();
+
             if(instance == null) {
                 instance = this;
                 DontDestroyOnLoad(gameObject);
@@ -71,7 +70,6 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         #region Public Methods
         public void InstantiatePlayers () {
             if(PhotonNetwork.IsMasterClient) {
-                Debug.Log("INSTA MASTER");
                 if(playerOneInstance != null)
                     return;
                 object[] data = { playerOneTeamIndex };
@@ -97,20 +95,22 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             if(PhotonNetwork.IsMasterClient) {
                 if(playerOneGoalInstance != null)
                     return;
-                object[] data = { 2 };
+                object[] data = { 1, playerOneTeamIndex };
                 playerOneGoalInstance = PhotonNetwork.Instantiate(goalPrefab.name, arena.GetRandomPositionInsideEdges(), Quaternion.identity, data: data);
 
             }
             else {
                 if(playerTwoGoalInstance != null)
                     return;
-                object[] data = { 1 };
+                object[] data = { 2, playerTwoTeamIndex };
                 playerTwoGoalInstance = PhotonNetwork.Instantiate(goalPrefab.name, arena.GetRandomPositionInsideEdges(), Quaternion.identity, data: data);
-
             }
         }
 
         public void AddPoint (int goalIndex) {
+            int p1OldValue = playerOnePoints;
+            int p2OldValue = playerOnePoints;
+
             if(goalIndex == 1) {
                 playerTwoPoints++;
             }
@@ -118,17 +118,42 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 playerOnePoints++;
             }
 
-            _pv.RPC(nameof(SendCurrentPoints), RpcTarget.All, playerOnePoints, playerTwoPoints);
+            _pv.RPC(nameof(SendCurrentPoints), RpcTarget.All, playerOnePoints, playerTwoPoints, p1OldValue, p2OldValue);
 
             _pv.RPC(nameof(ResetArena), RpcTarget.All);
 
             _pv.RPC(nameof(CheckWinningCondition), RpcTarget.All);
         }
+
+        public void GoBackToMainMenu () {
+            playerOneInstance = null;
+            playerTwoInstance = null;
+            playerOneGoalInstance = null;
+            playerTwoGoalInstance = null;
+            ballInstance = null;
+            PhotonNetwork.LoadLevel(0);
+            SceneManager.LoadScene(0);
+            PhotonNetwork.LeaveRoom(false);
+            PhotonNetwork.Disconnect();
+            PhotonNetwork.Destroy(gameObject);
+        }
         #endregion
 
         #region Private Methods
-        [PunRPC]
+        private void SetupGame (Scene scene, LoadSceneMode loadSceneMode = LoadSceneMode.Single) {
+            if(scene.buildIndex == 1) {
+                InstantiatePlayers();
+            }
+        }
 
+        private IEnumerator ScoreScreenCO () {
+            yield return new WaitForSeconds(5f);
+            SetupGame(SceneManager.GetActiveScene());
+        }
+        #endregion
+
+        #region RPCs
+        [PunRPC]
         private void CheckWinningCondition () {
             if(playerOnePoints == pointsToWin) {
                 _pv.RPC(nameof(SetWinner), RpcTarget.All, 1);
@@ -137,15 +162,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
                 _pv.RPC(nameof(SetWinner), RpcTarget.All, 2);
             }
             else {
-                SetupGame(SceneManager.GetActiveScene());
-            }
-        }
-
-        private void SetupGame (Scene scene, LoadSceneMode loadSceneMode = LoadSceneMode.Single) {
-            Debug.LogError($"Scene Index is {scene.buildIndex}");
-            if(scene.buildIndex == 1) {
-                Debug.LogError("SETUP GAME");
-                InstantiatePlayers();
+                StartCoroutine(nameof(ScoreScreenCO));
             }
         }
 
@@ -167,23 +184,22 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             playerTwoGoalInstance = null;
             ballInstance = null;
         }
-        #endregion
 
-        #region RPCs
         [PunRPC]
-        private void SendCurrentPoints (int p1Points, int p2Points) {
+        private void SendCurrentPoints (int p1Points, int p2Points, int p1OldValue, int p2OldValue) {
             playerOnePoints = p1Points;
             playerTwoPoints = p2Points;
 
-            OnPointsChanged?.Invoke(playerOnePoints, playerTwoPoints);
+            OnTeamHasScored?.Invoke(p1OldValue != playerOnePoints ? teamDatabase.teams[playerOneTeamIndex].teamName : teamDatabase.teams[playerTwoTeamIndex].teamName);
+            OnPointsChanged?.Invoke(p1Points, p2Points);
         }
 
         [PunRPC]
         private void SetWinner (int playerIndex) {
             if(playerIndex == 1 && PhotonNetwork.IsMasterClient || playerIndex == 2 && !PhotonNetwork.IsMasterClient)
-                OnWin?.Invoke();
+                OnGameEnded?.Invoke(true);
             else {
-                OnLose?.Invoke();
+                OnGameEnded?.Invoke(false);
             }
         }
         #endregion
