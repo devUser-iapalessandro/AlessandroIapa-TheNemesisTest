@@ -4,7 +4,7 @@
 
 ## Project Requirements
 
-* Engine Version: **Unity 2021.3.3f1**
+* Engine Version: **Unity 2021.3.3f1** - [Download](https://download.unity3d.com/download_unity/af2e63e8f9bd/Windows64EditorInstaller/UnitySetup64-2021.3.3f1.exe)
 * Any text/code editor/IDE in order to view the scripts 
 * Internet Connection (it is an online game)
 * (A PC... I guess...)
@@ -64,7 +64,9 @@ Once you are done, you can press the *ready* button only if both of you have cho
 
 * As soon as a goal is scored, proper messages are displayed in the HUD and players are respawned as well as the ball and the goals.
 
-* As soon as a player reaches three points, it is declared winner and the game ends. By pressing the *Back to the menu* button you will be able to start a new game from the teams' choice.
+* As soon as a player reaches three points, it is declared winner and the game ends. By pressing the *Back to the menu* button you will be able to start a new game from the main menu (as the name suggests).
+
+* The other option is to press the *Quick restart match* in order to go back into a lobby and wait for another player to join.
 
 ## Known issues
 
