@@ -1,5 +1,6 @@
 using System.Collections;
 using Photon.Pun;
+using Photon.Realtime;
 using TheNemesisTest.Runtime.Arena;
 using TheNemesisTest.Runtime.Data;
 using TheNemesisTest.Runtime.Player;
@@ -8,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace TheNemesisTest.Runtime.NetworkSystems {
     [RequireComponent(typeof(PhotonView))]
-    public class GameManager : MonoBehaviour {
+    public class GameManager : MonoBehaviourPunCallbacks {
         #region Public Variables
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject ballPrefab;
@@ -201,6 +202,31 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             else {
                 OnGameEnded?.Invoke(false);
             }
+        }
+        #endregion
+
+        #region Pun Callbacks
+        public override void OnDisconnected (DisconnectCause cause) {
+            base.OnDisconnected(cause);
+            Debug.LogError("OnDisconnected");
+        }
+
+        public override void OnLeftRoom () {
+            base.OnLeftRoom();
+            Debug.LogError("OnLeftRoom");
+        }
+
+        public override void OnPlayerLeftRoom (Photon.Realtime.Player otherPlayer) {
+            if(SceneManager.GetActiveScene().buildIndex == 0)
+                return;
+            base.OnPlayerLeftRoom(otherPlayer);
+            Debug.LogError("OnPlayerLeftRoom");
+            OnGameEnded?.Invoke(true);
+        }
+
+        public override void OnLeftLobby () {
+            base.OnLeftLobby();
+            Debug.LogError("OnLeftLobby");
         }
         #endregion
     }

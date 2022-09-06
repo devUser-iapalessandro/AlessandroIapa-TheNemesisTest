@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2d8c171c2ed654396f6c43229c797c, type: 3}
   m_Name: Punventus
   m_EditorClassIdentifier: 
-  teamID: 0
+  teamID: 1585255658
   teamName: Punventus
   inGameSkin: {fileID: 2100000, guid: f90b0b46d4be8d9498be99a8361e6ef0, type: 2}
-  goalSkin: {fileID: 2100000, guid: f90b0b46d4be8d9498be99a8361e6ef0, type: 2}
+  goalSkin: {fileID: 2100000, guid: b4c854610e89d7d4399f3bef7ef97d20, type: 2}

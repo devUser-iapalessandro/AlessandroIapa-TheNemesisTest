@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2d8c171c2ed654396f6c43229c797c, type: 3}
   m_Name: Punchester City
   m_EditorClassIdentifier: 
-  teamID: 0
+  teamID: -1108877416
   teamName: Punchester City
   inGameSkin: {fileID: 2100000, guid: 99104e3a2da97af47ad3fcfcf87418b1, type: 2}
-  goalSkin: {fileID: 2100000, guid: 99104e3a2da97af47ad3fcfcf87418b1, type: 2}
+  goalSkin: {fileID: 2100000, guid: 4a9275bec1d890d438c0774de0a080f3, type: 2}

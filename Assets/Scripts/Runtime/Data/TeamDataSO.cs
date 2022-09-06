@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace TheNemesisTest.Runtime.Data {
@@ -14,11 +15,21 @@ namespace TheNemesisTest.Runtime.Data {
             if(string.IsNullOrEmpty(teamName)) {
                 throw new TeamNameMissingException();
             }
+            if(inGameSkin == null) {
+                throw new TeamSkinMissingException();
+            }if(goalSkin == null) {
+                throw new TeamGoalSkinMissingException();
+            }
             var tempName = teamName.ToLower();
             teamID = tempName.GetHashCode();
+            EditorUtility.SetDirty(this);
         }
     }
 
     public class TeamNameMissingException : Exception {
+    }
+    public class TeamSkinMissingException : Exception {
+    }
+    public class TeamGoalSkinMissingException : Exception {
     }
 }

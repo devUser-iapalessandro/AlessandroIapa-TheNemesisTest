@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2d8c171c2ed654396f6c43229c797c, type: 3}
   m_Name: Bayern Punchen
   m_EditorClassIdentifier: 
-  teamID: 0
+  teamID: 545422162
   teamName: Bayern Punchen
   inGameSkin: {fileID: 2100000, guid: e3b25751394513a45ad611acf9b55737, type: 2}
-  goalSkin: {fileID: 2100000, guid: e3b25751394513a45ad611acf9b55737, type: 2}
+  goalSkin: {fileID: 2100000, guid: f15830b5adb689745aff3940b33b7864, type: 2}
