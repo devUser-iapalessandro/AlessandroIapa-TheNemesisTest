@@ -1,6 +1,6 @@
 # Alessandro Iapà - The Nemesis Test
 
-> Alessandro Iapà - The Nemesis Test is a small Unity project made by [Alessandro Iapà](https://alessandroiapo99.wixsite.com/gameprogrammer) which features a small, sort of, online soccer multiplayer gameplay
+> Alessandro Iapà - The Nemesis Test is a Unity project made by [Alessandro Iapà](https://alessandroiapo99.wixsite.com/gameprogrammer) which features a small, sort of, online soccer multiplayer gameplay
 
 ## Project Requirements
 
