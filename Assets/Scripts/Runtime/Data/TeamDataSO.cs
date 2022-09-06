@@ -22,7 +22,9 @@ namespace TheNemesisTest.Runtime.Data {
             }
             var tempName = teamName.ToLower();
             teamID = tempName.GetHashCode();
+#if UNITY_EDITOR
             EditorUtility.SetDirty(this);
+#endif
         }
     }
 

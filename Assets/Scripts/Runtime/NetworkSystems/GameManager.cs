@@ -14,12 +14,14 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject ballPrefab;
         [SerializeField] private GameObject goalPrefab;
+        [SerializeField] private GameObject quickRestartPrefab;
         [SerializeField] private int pointsToWin = 3;
 
         [SerializeField] private TeamDatabaseSO teamDatabase;
 
         public System.Action<int, int> OnPointsChanged;
         public System.Action<string> OnTeamHasScored;
+        public System.Action OnRoundHasStarted;
         public System.Action<bool> OnGameEnded;
         #endregion
 
@@ -50,6 +52,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
 
         #region Behaviour Callbacks
         void Awake () {
+            StopAllCoroutines();
             _pv = GetComponent<PhotonView>();
 
             if(instance == null) {
@@ -62,9 +65,8 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             SceneManager.sceneLoaded += SetupGame;
         }
 
-        private void OnGUI () {
-            if(SceneManager.GetActiveScene().buildIndex == 1)
-                GUILayout.Label(string.Format("Player One -> {0} - Player Two -> {1}", playerOneInstance, playerTwoInstance));
+        void OnDestroy () {
+            SceneManager.sceneLoaded -= SetupGame;
         }
         #endregion
 
@@ -132,23 +134,31 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             playerOneGoalInstance = null;
             playerTwoGoalInstance = null;
             ballInstance = null;
-            PhotonNetwork.LoadLevel(0);
-            SceneManager.LoadScene(0);
             PhotonNetwork.LeaveRoom(false);
-            PhotonNetwork.Disconnect();
-            PhotonNetwork.Destroy(gameObject);
+        }
+
+        public void QuickRestart () {
+            Instantiate(quickRestartPrefab);
+            GoBackToMainMenu();
         }
         #endregion
 
         #region Private Methods
         private void SetupGame (Scene scene, LoadSceneMode loadSceneMode = LoadSceneMode.Single) {
             if(scene.buildIndex == 1) {
-                InstantiatePlayers();
+                OnRoundHasStarted?.Invoke();
+                if(this != null)
+                    StartCoroutine(nameof(LoadRound));
             }
         }
 
+        private IEnumerator LoadRound () {
+            yield return new WaitForSeconds(3.25f);
+            InstantiatePlayers();
+        }
+
         private IEnumerator ScoreScreenCO () {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(3f);
             SetupGame(SceneManager.GetActiveScene());
         }
         #endregion
@@ -169,16 +179,21 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
 
         [PunRPC]
         private void ResetArena () {
-
             if(PhotonNetwork.IsMasterClient) {
-                PhotonNetwork.Destroy(playerOneInstance.gameObject);
-                PhotonNetwork.Destroy(ballInstance);
-                PhotonNetwork.Destroy(playerOneGoalInstance);
+                if(playerOneInstance != null)
+                    PhotonNetwork.Destroy(playerOneInstance.gameObject);
+                if(ballInstance != null)
+                    PhotonNetwork.Destroy(ballInstance);
+                if(playerOneGoalInstance != null)
+                    PhotonNetwork.Destroy(playerOneGoalInstance);
             }
             else {
-                PhotonNetwork.Destroy(playerTwoInstance.gameObject);
-                PhotonNetwork.Destroy(playerTwoGoalInstance);
+                if(playerTwoInstance != null)
+                    PhotonNetwork.Destroy(playerTwoInstance.gameObject);
+                if(playerTwoGoalInstance != null)
+                    PhotonNetwork.Destroy(playerTwoGoalInstance);
             }
+
             playerOneInstance = null;
             playerTwoInstance = null;
             playerOneGoalInstance = null;
@@ -214,6 +229,8 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
         public override void OnLeftRoom () {
             base.OnLeftRoom();
             Debug.LogError("OnLeftRoom");
+            Destroy(gameObject);
+            SceneManager.LoadScene(0);
         }
 
         public override void OnPlayerLeftRoom (Photon.Realtime.Player otherPlayer) {

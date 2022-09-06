@@ -70,5 +70,6 @@ MonoBehaviour:
   playerPrefab: {fileID: 1717162554576180567, guid: ebbc5e711b7150d40826be0ab80f301b, type: 3}
   ballPrefab: {fileID: 5132600484958211171, guid: a411cb31b3c60854cb8e8adfcabc1082, type: 3}
   goalPrefab: {fileID: 7602547463498292150, guid: 3001e1fd4e8a2d44ba356dcb750a54ad, type: 3}
+  quickRestartPrefab: {fileID: 6583308270197687211, guid: 980f97127e91c0b4c8594ab8030c655d, type: 3}
   pointsToWin: 3
   teamDatabase: {fileID: 11400000, guid: 4bb8f44547d93574f8bc11095e442908, type: 2}

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace TheNemesisTest.Runtime.Player {
-    [RequireComponent(typeof(PhotonView), typeof(PhotonRigidbodyView), typeof(PhotonTransformView))]
+    [RequireComponent(typeof(PhotonView), typeof(PhotonTransformViewClassic))]
     public class PlayerController : MonoBehaviour {
         #region Public Variables
         [SerializeField] private float movingSpeed;

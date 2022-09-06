@@ -31,8 +31,10 @@ namespace TheNemesisTest.Runtime.Data {
                     Debug.LogErrorFormat("Element at index {0} has empty team name parameter, impossible to generate ID for element at index {0} with empty team name parameter.");
                 }
             }
+#if UNITY_EDITOR
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+#endif
         }
     }
 }

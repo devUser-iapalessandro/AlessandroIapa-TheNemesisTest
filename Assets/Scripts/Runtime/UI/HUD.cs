@@ -8,10 +8,14 @@ namespace TheNemesisTest.Runtime.UI {
     public class HUD : MonoBehaviour {
         [SerializeField] private GameObject goalScreenContainer;
         [SerializeField] private GameObject endGameContainer;
+        [SerializeField] private GameObject countdownContainer;
         [SerializeField] private TextMeshProUGUI hudText;
         [SerializeField] private TextMeshProUGUI goalScreenText;
         [SerializeField] private TextMeshProUGUI hasWonOrLostText;
+        [SerializeField] private TextMeshProUGUI countdownText;
+
         [SerializeField] private Button mainMenuButton;
+        [SerializeField] private Button quickRestartButton;
 
         private WaitForSeconds setPointsTimeInterval;
         private WaitForSeconds goalScreenShowTime;
@@ -21,21 +25,35 @@ namespace TheNemesisTest.Runtime.UI {
             setPointsTimeInterval = new WaitForSeconds(.33f);
             goalScreenShowTime = new WaitForSeconds(3f);
             goalScreenContainer.SetActive(false);
+            countdownContainer.SetActive(false);
             hudText.gameObject.SetActive(true);
             endGameContainer.SetActive(false);
             hudText.text = "Home 0 - 0 Visitors";
             hasWonOrLostText.text = string.Empty;
             goalScreenText.text = string.Empty;
+            countdownText.text = string.Empty;
         }
 
         IEnumerator Start () {
+            ToggleCountdown();
             while(GameManager.Instance == null)
                 yield return null;
 
             GameManager.Instance.OnTeamHasScored += SetGoalScreenMessage;
+            GameManager.Instance.OnRoundHasStarted += ToggleCountdown;
             GameManager.Instance.OnGameEnded += ToggleEndGamePanel;
             GameManager.Instance.OnPointsChanged += SetPoints;
             mainMenuButton.onClick.AddListener(GameManager.Instance.GoBackToMainMenu);
+            quickRestartButton.onClick.AddListener(GameManager.Instance.QuickRestart);
+        }
+
+        void OnDestroy () {
+            GameManager.Instance.OnTeamHasScored -= SetGoalScreenMessage;
+            GameManager.Instance.OnRoundHasStarted -= ToggleCountdown;
+            GameManager.Instance.OnGameEnded -= ToggleEndGamePanel;
+            GameManager.Instance.OnPointsChanged -= SetPoints;
+            mainMenuButton.onClick.RemoveListener(GameManager.Instance.GoBackToMainMenu);
+            quickRestartButton.onClick.RemoveListener(GameManager.Instance.QuickRestart);
         }
         #endregion
 
@@ -56,6 +74,11 @@ namespace TheNemesisTest.Runtime.UI {
             endGameContainer.SetActive(true);
             hasWonOrLostText.text = hasWon ? "Congratulations!\nYou won!" : "Unlucky!\nYou lost!";
         }
+
+        public void ToggleCountdown () {
+            StopCoroutine(nameof(CountdownCO));
+            StartCoroutine(nameof(CountdownCO));
+        }
         #endregion
 
         #region Private Methods
@@ -75,6 +98,15 @@ namespace TheNemesisTest.Runtime.UI {
             goalScreenContainer.SetActive(true);
             yield return goalScreenShowTime;
             goalScreenContainer.SetActive(false);
+        }
+
+        private IEnumerator CountdownCO () {
+            countdownContainer.SetActive(true);
+            for(int i = 0; i < 3; i++) {
+                countdownText.text = $"{3 - i}!";
+                yield return new WaitForSeconds(1f);
+            }
+            countdownContainer.SetActive(false);
         }
         #endregion
     }

@@ -9,6 +9,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
     public class TNTLobby : MonoBehaviourPunCallbacks {
         #region Private Fields
         private PhotonView _photonView;
+        private bool enableQuickStart = false;
         #endregion
 
         #region Public Fields
@@ -17,6 +18,7 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
 
         #region Properties
         public static TNTLobby Instance { get; private set; }
+        public bool EnableQuickStart { get => enableQuickStart; set => enableQuickStart = value; }
         #endregion
 
         #region Behaviour Callbacks
@@ -47,12 +49,23 @@ namespace TheNemesisTest.Runtime.NetworkSystems {
             PhotonNetwork.JoinLobby();
             PhotonNetwork.AutomaticallySyncScene = true;
             Debug.Log("Connected to master");
-            TNTLobbyUI.Instance.ToggleMainMenuPanel();
+        }
+
+        public override void OnJoinedLobby () {
+            if(enableQuickStart) {
+                JoinRandomRoom();
+                TNTLobbyUI.Instance.ToggleSearchingPanel();
+                enableQuickStart = false;
+            }
+            else {
+                TNTLobbyUI.Instance.ToggleMainMenuPanel();
+            }
         }
 
         //Triggered on a room's creation or joining event
         public override void OnJoinedRoom () {
             if(PhotonNetwork.CurrentRoom.PlayerCount == 2) {
+                PhotonNetwork.CurrentRoom.IsOpen = false;
                 OnAllPlayersJoined?.Invoke();
                 if(PhotonNetwork.IsMasterClient)
                     TeamChoosingManager.Instance.Setup();
